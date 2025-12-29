@@ -118,7 +118,7 @@ export function ThreadList({ folderName, threads }: ThreadListProps) {
                       {thread.subject}
                     </span>
                     <span className="truncate text-gray-600">
-                      {latestEmail.body}
+                      {latestEmail.body /*email body here*/}
                     </span>
                   </div>
                 </div>
