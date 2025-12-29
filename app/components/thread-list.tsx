@@ -7,6 +7,7 @@ import { PenSquare, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { NavMenu } from './menu';
+import { set } from 'zod';
 
 type Email = Omit<typeof emails.$inferSelect, 'threadId'> & {
   sender: Pick<User, 'id' | 'firstName' | 'lastName' | 'email'>;
@@ -63,6 +64,9 @@ export function ThreadHeader({
 export function ThreadList({ folderName, threads }: ThreadListProps) {
   const [hoveredThread, setHoveredThread] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [summaries, setSummaries] = useState<Record<number, string>>({});
+  const [loadingSummaries, setLoadingSummaries] = useState<Record<number, boolean>>({});
+
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -76,6 +80,38 @@ export function ThreadList({ folderName, threads }: ThreadListProps) {
       window.removeEventListener('resize', checkIsMobile);
     };
   }, []);
+
+  useEffect(() => {
+    const fetchSummaries = async () => {
+      const newSummaries: Record<number,string> = {};
+      const loadingStates: Record<number, boolean> = {};
+
+      threads.forEach(thread => {
+        loadingStates[thread.id] = true;
+      });
+      setLoadingSummaries(loadingStates);
+
+      for (const thread of threads) {
+        try {
+          const response = await fetch('/api/summarize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ emails: thread.emails }),
+          });
+          const { summary } = await response.json();
+          
+
+          setSummaries(prev => ({ ...prev, [thread.id]: summary }));
+          setLoadingSummaries(prev => ({ ...prev, [thread.id]: false }));
+        } catch (error) {
+          
+          setSummaries(prev => ({ ...prev, [thread.id]: 'Summary not available.' }));
+          setLoadingSummaries(prev => ({ ...prev, [thread.id]: false }));
+        }
+      }
+    };
+    fetchSummaries();
+  }, [threads]);
 
   const handleMouseEnter = (threadId: number) => {
     if (!isMobile) {
@@ -95,7 +131,10 @@ export function ThreadList({ folderName, threads }: ThreadListProps) {
       <div className="h-[calc(100vh-64px)] overflow-auto">
         {threads.map((thread) => {
           const latestEmail = thread.emails[0];
+          const summary = summaries[thread.id] || '';
+          const isLoading = loadingSummaries[thread.id];
 
+          
           return (
             <Link
               key={thread.id}
@@ -117,9 +156,14 @@ export function ThreadList({ folderName, threads }: ThreadListProps) {
                     <span className="mr-2 max-w-[400px] min-w-[175px] truncate font-medium">
                       {thread.subject}
                     </span>
+                    {isLoading ? (
+                      <span className = "animate-pulse text-gray-400">Loading Summary...</span>
+                    ) : (
+                    
                     <span className="truncate text-gray-600">
-                      {latestEmail.body /*email body here*/}
+                      {summary}
                     </span>
+                    )}
                   </div>
                 </div>
                 <div className="flex w-40 shrink-0 items-center justify-end p-4">

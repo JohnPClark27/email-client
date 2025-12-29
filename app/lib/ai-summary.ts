@@ -9,7 +9,7 @@ interface EmailMessage {
     sentAt: string;
 }
 
-export async function summarizeThread(threadContent: EmailMessage[]) {
+export async function summarizeThread(threadContent: EmailMessage[]): Promise<string> {
     // Format thread for prompt
     const formattedThread = threadContent.map((email, index) => `Email ${index +1}:\nFrom: ${email.from}\nSubject: ${email.subject}\nBody: ${email.body}\nSent At: ${email.sentAt}\n`).join('\n\n---\n\n');
 
@@ -20,7 +20,7 @@ export async function summarizeThread(threadContent: EmailMessage[]) {
         messages: [
             {
                 role: 'user',
-                content: `Summarize this email in one concise sentence:\n\n${formattedThread}`
+                content: `Summarize this thread in one concise sentence no more than 10 words:\n\n${formattedThread}`
             }
         ]
     });
