@@ -1,3 +1,13 @@
+/**
+ * AI Summary Module
+ * 
+ * Author: John Clark
+ * Date: 12/29/2025
+ * AI Assistance Disclosure: GitHub Copilot was utilized to assist in code generation and debugging.
+ * 
+ * Connects to Anthropic's Claude API to create a summary of entire email thread.
+ */
+
 import Anthropic from '@anthropic-ai/sdk';
 
 const anthropic = new Anthropic({apiKey: process.env.CLAUDE_API_KEY,});

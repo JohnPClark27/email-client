@@ -1,3 +1,11 @@
+/**
+ * ThreadList Component
+ * 
+ * Documentation notes changes made by John Clark for the roboSource internship application.
+ * AI Assistance Disclosure: GitHub Copilot was utilized to assist in code generation and debugging.
+*/
+
+
 'use client';
 
 import { ThreadActions } from '@/app/components/thread-actions';
@@ -64,6 +72,8 @@ export function ThreadHeader({
 export function ThreadList({ folderName, threads }: ThreadListProps) {
   const [hoveredThread, setHoveredThread] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+
+  // States created to hold summaries and loading status
   const [summaries, setSummaries] = useState<Record<number, string>>({});
   const [loadingSummaries, setLoadingSummaries] = useState<Record<number, boolean>>({});
 
@@ -81,6 +91,7 @@ export function ThreadList({ folderName, threads }: ThreadListProps) {
     };
   }, []);
 
+  // Fetch and load summaries
   useEffect(() => {
     const fetchSummaries = async () => {
       const newSummaries: Record<number,string> = {};
@@ -157,6 +168,7 @@ export function ThreadList({ folderName, threads }: ThreadListProps) {
                       {thread.subject}
                     </span>
                     {isLoading ? (
+                      // Show either loading text or summary
                       <span className = "animate-pulse text-gray-400">Loading Summary...</span>
                     ) : (
                     

@@ -1,3 +1,13 @@
+/**
+ * API route to summarize email thread using AI.
+ * 
+ * Author: John Clark
+ * Date: 12/29/2025
+ * AI Assistance Disclosure: GitHub Copilot was utilized to assist in code generation and debugging.
+ * 
+ * Connects thread-list to AI summary module.
+ */
+
 import { NextResponse } from "next/server";
 import { summarizeThread } from "@/app/lib/ai-summary";
 

@@ -48,6 +48,16 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the app in action.
 
+# AI Summary Feature
+## Overview
+Utilizes Claude AI to generate summary of email thread.
+
+## Setup
+Update your `.env` file.
+```bash
+CLAUDE_API_KEY=your_api_key_here
+```
+
 ## Implemented
 
 - ✅ Search for emails
